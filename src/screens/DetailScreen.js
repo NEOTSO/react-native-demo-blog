@@ -15,12 +15,12 @@ const styles = StyleSheet.create({
 export default DetailScreen = ({ route }) => {
     const { state } = useContext(BlogContext);
     const { id } = route.params;
-
     const detail = state.find((item) => item.id === id);
+
     return (
         <View>
-            <Text>DetailScreen {id}</Text>
-            <Text>{detail && detail.id}</Text>
+            <Text>{detail.title}</Text>
+            <Text>{detail.content}</Text>
         </View>
     );
 };

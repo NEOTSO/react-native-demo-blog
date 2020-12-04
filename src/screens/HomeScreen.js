@@ -1,24 +1,17 @@
-import React, { useContext } from "react";
-import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useContext, useCallback } from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 
 import { Context as BlogContext } from "../context/BlogContext";
-// import { TouchableOpacity } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
     title: {
-        margin: 20,
-        position: "relative",
-        justifyContent: "center",
-    },
-    t: {
-        textAlign: "center",
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: "bold",
     },
-    create: {
-        position: "absolute",
-        right: 0,
+    content: {
+        fontSize: 18,
     },
     row: {
         padding: 20,
@@ -30,25 +23,35 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen = ({ navigation }) => {
-    const { state, addPost, deletePost } = useContext(BlogContext);
+    const { state, initPosts, deletePost } = useContext(BlogContext);
+
+    // useEffect(() => {
+    //     initPosts();
+    // }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            // Do something when the screen is focused
+            initPosts();
+            return () => {
+                // Do something when the screen is unfocused
+                // Useful for cleanup functions
+            };
+        }, [])
+    );
+
     return (
         <View>
-            <View style={styles.title}>
-                <Text style={styles.t}>HomeScreen</Text>
-                <TouchableOpacity style={styles.create} onPress={() => navigation.navigate("Create")}>
-                    <AntDesign name="plus" size={24} color="black" />
-                </TouchableOpacity>
-            </View>
-            <Button title="Add Post" onPress={addPost} />
             <FlatList
                 keyExtractor={(item) => `${item.id}`}
                 data={state}
                 renderItem={({ item }) => {
                     return (
                         <TouchableOpacity onPress={() => navigation.navigate("Detail", { id: item.id })} style={styles.row}>
-                            <Text>
-                                {item.title}#{item.id}
-                            </Text>
+                            <View>
+                                <Text style={styles.title}>{item.title}</Text>
+                                <Text style={styles.content}>{item.content}</Text>
+                            </View>
                             <TouchableOpacity onPress={() => deletePost(item.id)}>
                                 <AntDesign name="delete" size={24} color="black" />
                             </TouchableOpacity>

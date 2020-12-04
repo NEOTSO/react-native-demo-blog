@@ -1,23 +1,21 @@
-import React, { useContext } from "react";
-import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useContext } from "react";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Context as BlogContext } from "../context/BlogContext";
 
-const styles = StyleSheet.create({
-    row: {
-        padding: 20,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        borderTopWidth: 1,
-        borderColor: "grey",
-    },
-});
+import PostForm from "../components/PostForm";
 
-export default CreateScreen = () => {
-    // const { state } = useContext(BlogContext);
+const styles = StyleSheet.create({});
+
+export default CreateScreen = ({ navigation }) => {
+    const { addPost } = useContext(BlogContext);
 
     return (
-        <View>
-            <Text>CreateScreen</Text>
-        </View>
+        <PostForm
+            onSubmit={(post) => {
+                addPost(post, () => {
+                    navigation.navigate("Home");
+                });
+            }}
+        />
     );
 };
