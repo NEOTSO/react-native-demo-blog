@@ -1,6 +1,8 @@
-import React, { useContext } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity } from "react-native";
-import { Context as BlogContext } from "../context/BlogContext";
+import { useFocusEffect } from "@react-navigation/native";
+
+import jsonServer from "../api/jsonServer";
 
 const styles = StyleSheet.create({
     row: {
@@ -13,14 +15,30 @@ const styles = StyleSheet.create({
 });
 
 export default DetailScreen = ({ route }) => {
-    const { state } = useContext(BlogContext);
-    const { id } = route.params;
-    const detail = state.find((item) => item.id === id);
+    const [post, setPost] = useState(null);
+    const initPost = async (id) => {
+        const { data } = await jsonServer.get(`/posts/${id}`);
+        console.log("***");
+        console.log(id);
+        console.log(data);
+        setPost(data);
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            const { id } = route.params;
+            initPost(id);
+            return () => {
+                // Do something when the screen is unfocused
+                // Useful for cleanup functions
+            };
+        }, [])
+    );
 
     return (
         <View>
-            <Text>{detail.title}</Text>
-            <Text>{detail.content}</Text>
+            <Text>{post && post.title}</Text>
+            <Text>{post && post.content}</Text>
         </View>
     );
 };
